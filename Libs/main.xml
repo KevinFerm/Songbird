@@ -1,0 +1,8 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/">
+	<Script file="LibStub\LibStub.lua"/>
+	<Include file="AceTimer-3.0\AceTimer-3.0.xml"/>
+	<Include file="AceSerializer-3.0\AceSerializer-3.0.xml"/>
+	<Include file="AceComm-3.0\AceComm-3.0.xml"/>
+	<Script file="HereBeDragons\HereBeDragons-2.0.lua"/>
+	<Script file="HereBeDragons\HereBeDragons-Pins-2.0.lua"/>
+</Ui>
