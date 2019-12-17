@@ -37,14 +37,10 @@ Songbird.SongflowerFrames = {}
 SLASH_SONGBIRD1 = "/songbird"
 function SlashCmdList.SONGBIRD(cmd, editbox)
 
-    if cmd == "init" then  
-        Songbird:Init()
-    elseif cmd == "hide" then
+    if cmd == "hide" then
         Songbird:hideNodes()
     elseif cmd == "show" then
         Songbird:showNodes()
-    elseif cmd == "debug" then
-        Songbird:testSongflower()
     else
         print("Songbird - Songflower timers shared with your friends!")
         print("Commands:")
@@ -134,7 +130,6 @@ function Songbird:SendBroadcastIfActiveTimer()
     
 end
 
-
 -- Fires when player aura changes
 -- Checks if player has songflower
 -- If duration is 1 minute
@@ -171,25 +166,6 @@ function Songbird:handleAuraEvent(self, unit)
                 end
             end
         end
-    end
-end
-
--- Test function to see if it works
-function Songbird:testSongflower()
-    local zId, zT = HBD:GetPlayerZone()
-
-    -- Validate zone just in case
-    if not zId == 1448 then return end
-
-    local x,y,instance = HBD:GetPlayerZonePosition()
-    x = math.floor(x * 100)
-    y = math.floor(y * 100)
-
-    -- Check so that the position is valid
-    local key = Songbird:validatePlayerPosition(x,y)
-    if key then
-        -- We know that the songflower was just picked
-        Songbird:pickSongflower(key)
     end
 end
 
