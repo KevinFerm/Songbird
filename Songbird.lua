@@ -66,6 +66,7 @@ local LDB = LibStub("LibDataBroker-1.1"):NewDataObject("Songbird", {
 })
 icon:Register("Songbird", LDB)
 
+-- Create an empty object if none exist
 function Songbird:SetupDB()
     if SongbirdDB == nil then
         SongbirdDB = {}
