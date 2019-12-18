@@ -49,9 +49,38 @@ function SlashCmdList.SONGBIRD(cmd, editbox)
     end
 end
 
+-- Set icon to map
+local icon = LibStub("LibDBIcon-1.0")
+local LDB = LibStub("LibDataBroker-1.1"):NewDataObject("Songbird", {
+	type = "data source",
+	text = "Songbird",
+	icon = "Interface\\Icons\\spell_holy_mindvision",
+	OnClick = function(button,buttonPressed)
+		Songbird:Toggle()
+	end,
+	OnTooltipShow = function(tooltip)
+		if not tooltip or not tooltip.AddLine then return end
+		tooltip:AddLine("Songbird")
+		tooltip:AddLine("Click to toggle world map timers")
+	end,
+})
+icon:Register("Songbird", LDB)
+
 function Songbird:SetupDB()
     if SongbirdDB == nil then
         SongbirdDB = {}
+    end
+end
+
+-- Toggle function for showing and hiding nodes
+Songbird.isHidden = false
+function Songbird:Toggle()
+    if self.isHidden then
+        self.isHidden = false
+        Songbird:showNodes()
+    else
+        self.isHidden = true
+        Songbird:hideNodes()
     end
 end
 
