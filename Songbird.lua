@@ -42,6 +42,7 @@ function SlashCmdList.SONGBIRD(cmd, editbox)
     elseif cmd == "show" then
         Songbird:showNodes()
     else
+        Songbird:BroadcastTimers()
         print("Songbird - Songflower timers shared with your friends!")
         print("Commands:")
         print("/songbird hide - Hides the map timers and icons")
@@ -106,24 +107,36 @@ end
 -- Updates timers remotely
 function Songbird:RecvTimers(message, distribution, sender)
     local ok, receivedTimers = Serializer:Deserialize(message);
-    if not ok then return end
+    if not ok or not receivedTimers then return end
+    local didChange = false
     for key,timer in pairs(receivedTimers) do
         if SongbirdDB[key] then
             if timer > SongbirdDB[key] then
                 SongbirdDB[key] = timer
+                didChange = true
             end
         else
-            SongbirdDB[key] = timer
+            if timer and timer ~= false then
+                SongbirdDB[key] = timer
+                didChange = true
+            end
         end
+    end
+    if didChange == true then
+        Songbird:BroadcastTimers()
     end
 end
 
 -- Sends the timers we have to Raid and Guild channels
 function Songbird:BroadcastTimers()
     local serializedTimers = Serializer:Serialize(SongbirdDB)
+
+    Comm:SendCommMessage("Songbird", serializedTimers, "YELL");
+
     if (IsInRaid()) then
         Comm:SendCommMessage("Songbird", serializedTimers, "RAID");
     end
+
     if (GetGuildInfo("player") ~= nil) then
         Comm:SendCommMessage("Songbird", serializedTimers, "GUILD");
     end
