@@ -110,7 +110,7 @@ function Songbird:RecvTimers(message, distribution, sender)
     if not ok or not receivedTimers then return end
     local didChange = false
     for key,timer in pairs(receivedTimers) do
-        if SongbirdDB[key] ~= false then
+        if timer ~= false and SongbirdDB[key] ~= false then
             if timer > SongbirdDB[key] then
                 SongbirdDB[key] = timer
                 didChange = true
