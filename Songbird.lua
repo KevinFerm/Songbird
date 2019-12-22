@@ -219,8 +219,8 @@ function Songbird:validatePlayerPosition(x, y)
         local sX = math.floor(coords[1])
         local sY = math.floor(coords[2])
         -- Check coordinates, with margin of error since we floor it
-        if sX == x or sX == x - 1 or sX == x + 1 then
-            if sY == y or sY == y - 1 or sY == y + 1 then
+        if sX == x or sX == x - 2 or sX == x + 2 then
+            if sY == y or sY == y - 2 or sY == y + 2 then
                 return key
             end
         end
