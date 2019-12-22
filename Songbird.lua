@@ -42,6 +42,8 @@ function SlashCmdList.SONGBIRD(cmd, editbox)
     elseif cmd == "show" then
         Songbird:showNodes()
     else
+        
+        Songbird:validatePlayerPosition(51,85)
         Songbird:BroadcastTimers()
         print("Songbird - Songflower timers shared with your friends!")
         print("Commands:")
@@ -197,8 +199,8 @@ function Songbird:handleAuraEvent(self, unit)
                     if not zId == 1448 then break end
 
                     local x,y,instance = HBD:GetPlayerZonePosition()
-                    x = math.floor(x * 100)
-                    y = math.floor(y * 100)
+                    --x = math.floor(x * 100)
+                    --y = math.floor(y * 100)
 
                     -- Check so that the position is valid
                     local key = Songbird:validatePlayerPosition(x,y)
@@ -218,17 +220,14 @@ function Songbird:validatePlayerPosition(x, y)
     for key, coords in pairs(Songbird.songflowerCoords) do
         local sX = math.floor(coords[1])
         local sY = math.floor(coords[2])
-        -- Check coordinates, with margin of error since we floor it
-        if sX >= x - 2 and sX <= x + 2 then
-            if sY >= y - 2 or sY <= y + 2 then
-                return key
-            end
+        -- Measure distance between two coordinates
+        local distance = math.sqrt(((x - sX)^2) + ((y - sY)^2))
+        if distance < 3 then
+            return key
         end
-
     end
     return false
 end
-
 
 -- Adds a frame to the world map
 -- In this case it's a Songflower icon with a possible timer below it
