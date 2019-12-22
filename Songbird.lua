@@ -252,8 +252,10 @@ function Songbird:getFlowerStatus(key, f)
     local currTime = GetServerTime()
     if flowerTime then
         if flowerTime <= currTime then
-            flowerTime = nil
-            SongbirdDB[key] = false
+            if flowerTime < currTime + (60 * 3) then
+                flowerTime = nil
+                SongbirdDB[key] = false
+            end
             f.title:SetTextColor(0, 1, 0, 1)
             return "Ready?"
         end
