@@ -42,8 +42,6 @@ function SlashCmdList.SONGBIRD(cmd, editbox)
     elseif cmd == "show" then
         Songbird:showNodes()
     else
-        
-        Songbird:validatePlayerPosition(51,85)
         Songbird:BroadcastTimers()
         print("Songbird - Songflower timers shared with your friends!")
         print("Commands:")
