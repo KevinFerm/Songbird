@@ -4,6 +4,7 @@ local HBD = LibStub("HereBeDragons-2.0")
 local AceTimer = LibStub("AceTimer-3.0")
 local Serializer = LibStub("AceSerializer-3.0")
 local Comm = LibStub("AceComm-3.0")
+Songbird.COMMKEY = "Songbird-1"
 
 -- Runs our init function when ready
 function Songbird:Initialize()
@@ -100,7 +101,24 @@ function Songbird:Init()
     -- Register event on UNIT_AURA so we can check if player got Songflower
     Frame:RegisterEvent("UNIT_AURA")
     Frame:SetScript("OnEvent", Songbird.handleAuraEvent)
-    Comm:RegisterComm("Songbird", Songbird.RecvTimers)
+    Comm:RegisterComm(Songbird.COMMKEY, Songbird.RecvTimers)
+end
+
+function Songbird:Debug()
+    local zId, zT = HBD:GetPlayerZone()
+    -- Validate zone just in case
+    if not zId == 1448 then return end
+
+    local x,y,instance = HBD:GetPlayerZonePosition()
+    x = x * 100
+    y = y * 100
+
+    -- Check so that the position is valid
+    local key = Songbird:validatePlayerPosition(x,y)
+    if key then
+        -- We know that the songflower was just picked
+        Songbird:pickSongflower(key)
+    end
 end
 
 -- Function fires when timers are sent from another player (or self)
@@ -110,19 +128,18 @@ function Songbird:RecvTimers(message, distribution, sender)
     if not ok or not receivedTimers then return end
     local didChange = false
     for key,timer in pairs(receivedTimers) do
-        if timer ~= false and SongbirdDB[key] ~= false then
+        if timer ~= false and (SongbirdDB[key] == nil or SongbirdDB[key] == false) then
+            SongbirdDB[key] = timer
+            didChange = true
+        end
+        if timer ~= false and SongbirdDB[key] ~= false and SongbirdDB[key] ~= nil  then
             if timer > SongbirdDB[key] then
-                SongbirdDB[key] = timer
-                didChange = true
-            end
-        else
-            if timer ~= false then
                 SongbirdDB[key] = timer
                 didChange = true
             end
         end
     end
-    if didChange == true then
+    if didChange == true and sender ~= UnitName("player") then
         Songbird:BroadcastTimers()
     end
 end
@@ -131,14 +148,14 @@ end
 function Songbird:BroadcastTimers()
     local serializedTimers = Serializer:Serialize(SongbirdDB)
 
-    Comm:SendCommMessage("Songbird", serializedTimers, "YELL");
+    Comm:SendCommMessage(Songbird.COMMKEY, serializedTimers, "YELL");
 
     if (IsInRaid()) then
-        Comm:SendCommMessage("Songbird", serializedTimers, "RAID");
+        Comm:SendCommMessage(Songbird.COMMKEY, serializedTimers, "RAID");
     end
 
     if (GetGuildInfo("player") ~= nil) then
-        Comm:SendCommMessage("Songbird", serializedTimers, "GUILD");
+        Comm:SendCommMessage(Songbird.COMMKEY, serializedTimers, "GUILD");
     end
 end
 
