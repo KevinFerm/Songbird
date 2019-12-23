@@ -197,8 +197,8 @@ function Songbird:handleAuraEvent(self, unit)
                     if not zId == 1448 then break end
 
                     local x,y,instance = HBD:GetPlayerZonePosition()
-                    --x = math.floor(x * 100)
-                    --y = math.floor(y * 100)
+                    x = x * 100
+                    y = y * 100
 
                     -- Check so that the position is valid
                     local key = Songbird:validatePlayerPosition(x,y)
